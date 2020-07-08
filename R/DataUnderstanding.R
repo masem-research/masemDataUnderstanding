@@ -17,8 +17,9 @@
 #' numberedVariablesList(df = mtcars)
 numberedVariablesList <- function(df) {
   if (!is.data.frame(df)) {
-    warning("input object is not a data.frame!")
-    return(NA_real_)
+    #warning("input object is not a data.frame!")
+    #return(NA)
+    stop("input object is not a data.frame!")
   }
   return(data.frame(variableNames = names(df)))
 }
@@ -153,8 +154,11 @@ FeatureByTargetVariable <- function(DataFrame, Feature, TargetVariable) {
 #' @export
 #'
 #' @examples
-#' NumericalFeatureByTargetVariable(DataFrame = iris, NumericalFeature = "Sepal.Length", TargetVariable = "Species")
+#' NumericalFeatureByTargetVariable(DataFrame = iris,
+#'                                  NumericalFeature = "Sepal.Length",
+#'                                  TargetVariable = "Species")
 NumericalFeatureByTargetVariable <- function(DataFrame, NumericalFeature, TargetVariable) {
+  # TODO: Overall density (with switch)
   ggplot(data = DataFrame, aes(x = DataFrame[, NumericalFeature], fill = factor(DataFrame[, TargetVariable]))) +
     geom_density(alpha = .2) +
     theme(legend.position = "bottom")

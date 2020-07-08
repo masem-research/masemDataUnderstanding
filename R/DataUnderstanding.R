@@ -62,5 +62,91 @@ freqTable <- function(x) {
 
 
 
+#' Cross table with row precentages
+#'
+#' @param column vector. Column Vector: Should be target variable
+#' @param row vector. Row Vector
+#'
+#' @return table. Crosstable
+#' @export
+#'
+#' @examples
+#' # mtcars
+#' crossTableRowPercentages(column = mtcars$am, row = mtcars$cyl)
+crossTableRowPercentages <- function(column, row) {
+  # note: y should be the target variable!
+  options(digits = 5)
+  cross.table.absolute.values <- table(row, column)
+  cross.table.relative.values <- prop.table(cross.table.absolute.values, 1)*100
+  return(cross.table.relative.values)
+}
+
+
+
+
+#' Display the target binary variable
+#'
+#' @description Display a binary (target) variable in ggplot2.
+#'
+#' @param DataFrame data.frame.
+#' @param targetVariable. vector. Name of (target) variable to display
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' ## Call
+#' AbsolutValues(DataFrame = mtcars, targetVariable = mtcars$am)
+AbsolutValues <- function(DataFrame, targetVariable) {
+  ## Prüfung, ob Inputvariable factor ist: is.factor...
+  ## Wie viele Ausprägungen im factor? unique...
+  ## Farbvektor verwenden! Corporate Design Farben
+  ggplot(data = DataFrame, aes(x = as.factor(targetVariable),
+                           fill = as.factor(targetVariable))) +
+    geom_bar(aes(fill = as.factor(targetVariable))) +
+    #scale_fill_manual(values = c("green", "red"),
+    #                  labels = c("No", "Yes"),
+    #                  name = "Target Variable") +
+    #theme(legend.position = "none") +
+    labs(y = "Anzahl", x = "TargetVariable")
+}
+
+
+
+
+#' Displays a feature variable by a binary target variable
+#'
+#' @param DataFrame data.frame. data.frame under investigation.
+#' @param Feature vector. Feature variable.
+#' @param TargetVariable factor. Binary target variable.
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' ## mtcars
+#' FeatureByTargetVariable(DataFrame = mtcars, Feature = "gear", TargetVariable = "am")
+#' ## Selected variables in data.frame:
+#' Variables <- c("cyl", "gear", "vs")
+#' for (i in Variables) {
+#'     print(FeatureByTargetVariable(DataFrame = mtcars, Feature = i, TargetVariable = "am"))
+#' }
+FeatureByTargetVariable <- function(DataFrame, Feature, TargetVariable) {
+  ggplot(data = DataFrame, aes(DataFrame[,Feature], fill = as.factor(DataFrame[,TargetVariable]))) +
+    geom_bar(position = "fill") +
+    scale_fill_manual(values = c("green", "red"),
+                      #labels = c("No", "Yes"),
+                      name = "Target Variable") +
+    #theme(legend.position = "none") +
+    labs(y = "count", x = paste("Feature:", Feature))
+}
+
+
+
+
+
+
+
+
 
 

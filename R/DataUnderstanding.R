@@ -1,6 +1,3 @@
-# Function: show numbered list of variable names in a dataset -------------
-
-
 #' PrintDisplay numbered list of variables in a dataset
 #'
 #' @description Often it is really useful to have a numbered list of variables

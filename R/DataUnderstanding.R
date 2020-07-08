@@ -89,25 +89,26 @@ crossTableRowPercentages <- function(column, row) {
 #' @description Display a binary (target) variable in ggplot2.
 #'
 #' @param DataFrame data.frame.
-#' @param targetVariable. vector. Name of (target) variable to display
+#' @param targetVariable. character. Name of (target) variable to display
 #'
 #' @return
 #' @export
 #'
 #' @examples
 #' ## Call
-#' AbsolutValues(DataFrame = mtcars, targetVariable = mtcars$am)
-AbsolutValues <- function(DataFrame, targetVariable) {
-  ## Prüfung, ob Inputvariable factor ist: is.factor...
-  ## Wie viele Ausprägungen im factor? unique...
-  ## Farbvektor verwenden! Corporate Design Farben
-  ggplot(data = DataFrame, aes(x = as.factor(targetVariable),
-                           fill = as.factor(targetVariable))) +
-    geom_bar(aes(fill = as.factor(targetVariable))) +
+#' AbsoluteValues(DataFrame = mtcars, targetVariable = "am")
+AbsoluteValues <- function(DataFrame, targetVariable) {
+  ## TODO: (please check todor!)
+  ## Add more colors for non-binary target variables
+  ## Add a (corporate design) color vector
+  ## ...
+  ggplot(data = DataFrame, aes(x = as.factor(DataFrame[,targetVariable]),
+                           fill = as.factor(DataFrame[,targetVariable]))) +
+    geom_bar(aes(fill = as.factor(DataFrame[,targetVariable]))) +
     #scale_fill_manual(values = c("green", "red"),
     #                  labels = c("No", "Yes"),
     #                  name = "Target Variable") +
-    #theme(legend.position = "none") +
+    theme(legend.position = "none") +
     labs(y = "Anzahl", x = "TargetVariable")
 }
 
@@ -137,13 +138,30 @@ FeatureByTargetVariable <- function(DataFrame, Feature, TargetVariable) {
     scale_fill_manual(values = c("green", "red"),
                       #labels = c("No", "Yes"),
                       name = "Target Variable") +
-    #theme(legend.position = "none") +
+    theme(legend.position = "none") +
     labs(y = "count", x = paste("Feature:", Feature))
 }
 
 
 
 
+
+#' Numerical Feature by categorical target variable
+#'
+#' @param DataFrame. data.frame. data.frame under investigation.
+#' @param NumericalFeature character. Numerical feature
+#' @param TargetVariable character. Categorical target variable.
+#'
+#' @return chart.
+#' @export
+#'
+#' @examples
+#' NumericalFeatureByTargetVariable(DataFrame = iris, NumericalFeature = "Sepal.Length", TargetVariable = "Species")
+NumericalFeatureByTargetVariable <- function(DataFrame, NumericalFeature, TargetVariable) {
+  ggplot(data = DataFrame, aes(x = DataFrame[, NumericalFeature], fill = factor(DataFrame[, TargetVariable]))) +
+    geom_density(alpha = .2) +
+    theme(legend.position = "bottom")
+}
 
 
 

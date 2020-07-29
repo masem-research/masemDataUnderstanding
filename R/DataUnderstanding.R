@@ -264,7 +264,6 @@ StatisticalParameterIntervalLevel <- function(variable,
   ## Return a data.frame
   return(data.frame(Variable = basicSet))
   }
-}
 
 
 

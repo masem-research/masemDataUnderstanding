@@ -205,6 +205,67 @@ FreqTableMissingValues <- function(DataFrame, absoluteValues = TRUE) {
 
 
 
+#' Statistical Parameter for interval level (and maybe ordinal level) variables
+#'
+#' @param variable numerical. Input variable, numerical one.
+#' @param expandedSet boolean. Calculate skewness and kurtosis?
+#' Default is FALSE. Pleae note: Package psych is required!
+#' @param densityPlot boolean. Print out a simple density plot?
+#'
+#' @return data.frame. Returns a data.frame with requested statistical
+#' parameter.
+#' @export
+#'
+#' @examples
+#' ## Example with missing values, exypanded set and density plot
+#' StatisticalParameterIntervalLevel(variable = airquality$Ozone,
+#'                                   expandedSet = TRUE,
+#'                                   densityPlot = TRUE)
+StatisticalParameterIntervalLevel <- function(variable,
+                                              expandedSet = FALSE,
+                                              densityPlot = FALSE) {
+  ## Variable must be a numerical variable.
+  ## Note on ordinal scaled variables: User has to decide if function should be
+  #   applied to ordinal scaled variables. In R user has to transform ordinal
+  #   scaled variables ("ordered") in a numerical one first.
+
+  ## Basic set of parameters
+  #  Number of valid cases
+  #  Percent value of valid cases
+  #  Minimum
+  #  Maximum
+  #  Arithmetic Mean
+  #  Standard Deviation
+  #  Median
+  basicSet <- c(ValidCases = sum(!is.na(variable)),
+                pValidCases = sum(!is.na(variable))/length(variable),
+                Min = min(variable, na.rm = TRUE),
+                Max = max(variable, na.rm = TRUE),
+                Average = mean(variable, na.rm = TRUE),
+                StandDev = sd(variable, na.rm = TRUE),
+                Median = median(variable, na.rm = TRUE))
+  ## Expanded Set:?
+  #  Skewness
+  #  Kurtosis
+  if (expandedSet) {
+    basicSet <- c(basicSet,
+                  Skewness = psych::skew(variable, na.rm = TRUE),
+                  Kurtosis = psych::kurtosi(variable, na.rm = TRUE))
+  }
+
+  ## Density Plot:?
+  if (densityPlot) {
+    plot(density(x = variable, na.rm = T),
+         col = "darkgrey",
+         lwd = 2,
+         main = "Density Plot")
+  }
+
+  ## Return a data.frame
+  return(data.frame(Variable = basicSet))
+  }
+}
+
 
 
 

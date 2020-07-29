@@ -167,5 +167,44 @@ NumericalFeatureByTargetVariable <- function(DataFrame, NumericalFeature, Target
 
 
 
+#' Count the number of missing values in each variable in a data.frame
+#'
+#' @description Counts the number of missing values of each variable in a
+#' data.frame and returns either absolute or relative values
+#' (argument `absoluteValues`)
+#' @param DataFrame data.frame. Contains the variables which should be
+#' investigated.
+#' @param absoluteValues. boolean. If TRUE, absolute values will be printed out,
+#' if FALSE, relative values. Default are absolute values.
+#'
+#' @return data.frame. Returns a data.frame with variable names, number of valid
+#' cases and number of missing cases.
+#' @export
+#'
+#' @examples
+#' ## dataset airquality contains NAs
+#' airquality[1:8,]
+#' # absolute values
+#' FreqTableMissingValues(DataFrame = airquality, absoluteValues = TRUE)
+#' # relative values
+#' FreqTableMissingValues(DataFrame = airquality, absoluteValues = FALSE)
+FreqTableMissingValues <- function(DataFrame, absoluteValues = TRUE) {
+  ## is.na() will be used to get the number of missing values in each variable
+  #   result is a data.frame
+  vectorMissingValues <- sapply(X = DataFrame, FUN = function(x) {sum(is.na(x))})
+  ## Build a data.frame
+  if (absoluteValues) {
+    return(data.frame(ValidCases = nrow(DataFrame) - vectorMissingValues,
+                      MissingCases = vectorMissingValues))
+  } else {
+    return(data.frame(ValidCases = (nrow(DataFrame) - vectorMissingValues)/nrow(DataFrame),
+                      MissingCases = vectorMissingValues/nrow(DataFrame)))
+  }
+}
+
+
+
+
+
 
 

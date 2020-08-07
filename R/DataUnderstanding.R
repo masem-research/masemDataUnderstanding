@@ -27,7 +27,7 @@ numberedVariablesList <- function(df) {
 
 
 
-#' Frequency table with number of cases and relative number of cases (%)
+#' Frequency table with number of cases and relative number of cases
 #'
 #' @description Provides a table with absolute and relative number of cases.
 #' The output table can be easily used in Markdown with kable().

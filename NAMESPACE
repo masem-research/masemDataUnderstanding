@@ -2,7 +2,9 @@
 
 export(AbsoluteValues)
 export(FeatureByTargetVariable)
+export(FreqTableMissingValues)
 export(NumericalFeatureByTargetVariable)
+export(StatisticalParameterIntervalLevel)
 export(crossTableRowPercentages)
 export(freqTable)
 export(numberedVariablesList)

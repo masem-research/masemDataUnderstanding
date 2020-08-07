@@ -20,5 +20,7 @@ chart.
 Numerical Feature by categorical target variable
 }
 \examples{
-NumericalFeatureByTargetVariable(DataFrame = iris, NumericalFeature = "Sepal.Length", TargetVariable = "Species")
+NumericalFeatureByTargetVariable(DataFrame = iris,
+                                 NumericalFeature = "Sepal.Length",
+                                 TargetVariable = "Species")
 }

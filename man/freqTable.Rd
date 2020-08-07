@@ -2,7 +2,7 @@
 % Please edit documentation in R/DataUnderstanding.R
 \name{freqTable}
 \alias{freqTable}
-\title{Frequency table with number of cases and relative number of cases (%)}
+\title{Frequency table with number of cases and relative number of cases}
 \usage{
 freqTable(x)
 }

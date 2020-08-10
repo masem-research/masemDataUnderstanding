@@ -144,13 +144,13 @@ FeatureByTargetVariable <- function(DataFrame, Feature, TargetVariable) {
 
 
 
-#' Numerical Feature by categorical target variable
+#' Density chart for numerical feature by categorical target variable
 #'
 #' @param DataFrame. data.frame. data.frame under investigation.
 #' @param NumericalFeature character. Numerical feature
 #' @param TargetVariable character. Categorical target variable.
 #'
-#' @return chart.
+#' @return density plot.
 #' @export
 #'
 #' @examples
@@ -264,6 +264,27 @@ StatisticalParameterIntervalLevel <- function(variable,
   ## Return a data.frame
   return(data.frame(Variable = basicSet))
   }
+
+
+
+NumericalVariables <- "Sepal.Length"
+NumericalVariables <- c("Sepal.Length", "Sepal.Width")
+CategoricalVariable <- "Species"
+DataFrame <- iris
+AverageByCategoricalVariable <- function(NumericalVariables,
+                                         CategoricalVariable,
+                                         DataFrame,
+                                         DisplayChart = FALSE) {
+  # Calculate the table
+  TableArithmeticMean <- aggregate(x = DataFrame[,NumericalVariables, drop = FALSE],
+                                   by = list(DataFrame[,CategoricalVariable]),
+                                   FUN = "mean",
+                                   na.rm = TRUE)
+  # Set correct group name in data.frame
+  colnames(TableArithmeticMean)[1] <- CategoricalVariable
+  # Display a corresponding chart
+
+}
 
 
 

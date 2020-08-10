@@ -27,6 +27,46 @@ numberedVariablesList <- function(df) {
 
 
 
+
+#' Displays Metadata of variables in a data.frame
+#'
+#' @param DataFrame data.frame. data to be analyzed. data.frame required.
+#'
+#' @details
+#' Returns four columns in a data.frame:
+#' 1: VarNo:         Running Number
+#' 2: VarNames:      Variable Name
+#' 3: StorageType:   Atomic class
+#' 4: UniqueValues:  Number of unique categories
+#'
+#' @return data.frame. data.frame with metadata.
+#' @export
+#'
+#' @examples
+#' ## famous iris data set
+#' VariableMetaData(DataFrame = iris)
+#' ## mtcars data set
+#' VariableMetaData(DataFrame = mtcars)
+VariableMetaData <- function(DataFrame) {
+  ## Returns four columns in a data.frame:
+  #   1: VarNo:         Running Number
+  #   2: VarNames:      Variable Name
+  #   3: StorageType:   Atomic class
+  #   4: UniqueValues:  Number of unique categories
+  ## Generate data.frame
+  VariableMetaData <- data.frame(VarNo = 1: length(names(DataFrame)),
+                                 VarNames = names(DataFrame),
+                                 StorageType = sapply(DataFrame, class),
+                                 UniqueValues = sapply(DataFrame, function(x) length(unique(x))))
+  ## Delete row,names
+  rownames(VariableMetaData) <- NULL
+  ## Return
+  return(VariableMetaData)
+  }
+
+
+
+
 #' Frequency table with number of cases and relative number of cases
 #'
 #' @description Provides a table with absolute and relative number of cases.

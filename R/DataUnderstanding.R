@@ -225,21 +225,42 @@ NumericalFeatureByTargetVariable <- function(DataFrame, NumericalFeature, Target
 #' ## dataset airquality contains NAs
 #' airquality[1:8,]
 #' # absolute values
-#' FreqTableMissingValues(DataFrame = airquality, absoluteValues = TRUE)
-#' # relative values
-#' FreqTableMissingValues(DataFrame = airquality, absoluteValues = FALSE)
-FreqTableMissingValues <- function(DataFrame, absoluteValues = TRUE) {
+#' FreqTableMissingValues(DataFrame = airquality, absoluteValues = TRUE, chart = FALSE)
+#' # relative values with chart
+#' FreqTableMissingValues(DataFrame = airquality, absoluteValues = FALSE, chart = TRUE)
+FreqTableMissingValues <- function(DataFrame, absoluteValues = TRUE, chart = FALSE) {
   ## is.na() will be used to get the number of missing values in each variable
   #   result is a data.frame
   vectorMissingValues <- sapply(X = DataFrame, FUN = function(x) {sum(is.na(x))})
   ## Build a data.frame
   if (absoluteValues) {
-    return(data.frame(ValidCases = nrow(DataFrame) - vectorMissingValues,
-                      MissingCases = vectorMissingValues))
+    MissingValuesVariables <- data.frame(ValidCases = nrow(DataFrame) - vectorMissingValues,
+                                         MissingCases = vectorMissingValues)
   } else {
-    return(data.frame(ValidCases = (nrow(DataFrame) - vectorMissingValues)/nrow(DataFrame),
-                      MissingCases = vectorMissingValues/nrow(DataFrame)))
+    MissingValuesVariables <- data.frame(ValidCases = (nrow(DataFrame) - vectorMissingValues)/nrow(DataFrame),
+                                         MissingCases = vectorMissingValues/nrow(DataFrame))
   }
+  ## Chart
+  if (chart) {
+    #   Please note: the chart requires relative values!
+    RelativeValuesChart <- data.frame(ValidCases = (nrow(DataFrame) - vectorMissingValues)/nrow(DataFrame),
+                                      MissingCases = vectorMissingValues/nrow(DataFrame))
+
+    # Generate Data
+    RelativeValuesChart$VarNames <- rownames(RelativeValuesChart)
+    # Lock in factor level order (reversed order of levels necessary here!)
+    RelativeValuesChart$VarNames <- factor(RelativeValuesChart$VarNames,
+                                           levels = rev(RelativeValuesChart$VarNames))
+    # Plot relative number by variable
+    print(ggplot(data = RelativeValuesChart, aes(x = VarNames, y = ValidCases)) +
+      geom_bar(stat= "identity", fill = "#0066B3", width = 0.8) +
+      xlab("") +
+      ylab("Relative number of valid cases") +
+      coord_flip())
+  }
+
+  ## Return
+  return(MissingValuesVariables)
 }
 
 

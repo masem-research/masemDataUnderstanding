@@ -328,12 +328,6 @@ StatisticalParameterIntervalLevel <- function(variable,
 
 
 
-NumericalVariables <- "Sepal.Length"
-NumericalVariables <- c("Sepal.Length", "Sepal.Width")
-CategoricalVariable <- "Species"
-DataFrame <- iris
-
-
 
 #' Average of one or more numerical features by a categorical (target) variable
 #'

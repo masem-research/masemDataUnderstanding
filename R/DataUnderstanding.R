@@ -332,10 +332,31 @@ NumericalVariables <- "Sepal.Length"
 NumericalVariables <- c("Sepal.Length", "Sepal.Width")
 CategoricalVariable <- "Species"
 DataFrame <- iris
+
+
+
+#' Average of one or more numerical features by a categorical (target) variable
+#'
+#' @param NumericalVariables character. Vector of names of numerical variables.
+#' @param CategoricalVariable character. Name of single categorical (target) variable.
+#' @param DataFrame data.frame. Input data.frame. Has to contain the `NumericalVariables`
+#' and the single `CategoricalVariable`
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' # a few numerical features
+#' AverageByCategoricalVariable(NumericalVariables = c("Sepal.Length", "Sepal.Width"),
+#'                              CategoricalVariable = c("Species"),
+#'                              DataFrame = iris)
+#' # a single numerical feature
+#' AverageByCategoricalVariable(NumericalVariables = c("mpg"),
+#'                              CategoricalVariable = c("am"),
+#'                              DataFrame = mtcars)
 AverageByCategoricalVariable <- function(NumericalVariables,
                                          CategoricalVariable,
-                                         DataFrame,
-                                         DisplayChart = FALSE) {
+                                         DataFrame) {
   # Calculate the table
   TableArithmeticMean <- aggregate(x = DataFrame[,NumericalVariables, drop = FALSE],
                                    by = list(DataFrame[,CategoricalVariable]),
@@ -343,8 +364,8 @@ AverageByCategoricalVariable <- function(NumericalVariables,
                                    na.rm = TRUE)
   # Set correct group name in data.frame
   colnames(TableArithmeticMean)[1] <- CategoricalVariable
-  # Display a corresponding chart
-
+  # return
+  return(TableArithmeticMean)
 }
 
 

@@ -350,14 +350,13 @@ StatisticalParameterIntervalLevel <- function(variable,
 
 
 
-#' Average of one or more numerical features by a categorical (target) variable
+#' @title Average of one or more numerical features by a categorical (target) variable
+#' and the single `CategoricalVariable`
 #'
 #' @param NumericalVariables character. Vector of names of numerical variables.
 #' @param CategoricalVariable character. Name of single categorical (target) variable.
 #' @param DataFrame data.frame. Input data.frame. Has to contain the `NumericalVariables`
-#' @param dropNA boolean. Drop NA values prior to analysis in numerical variable?
-#' Default is `FALSE`
-#' and the single `CategoricalVariable`
+#' @param dropNA boolean. Drop NA values prior to analysis in numerical variable? Default is `FALSE`
 #'
 #' @return
 #' @export

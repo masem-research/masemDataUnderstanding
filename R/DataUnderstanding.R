@@ -200,6 +200,36 @@ FeatureByTargetVariable <- function(DataFrame, Feature, TargetVariable) {
 
 
 
+#' @title Displays a feature by a Net Promoter Score (NPS) variable
+#'
+#' @description A special modification of function FeatureByTargetVariable to incorporate the commonly
+#' used Net Promoter Score Variable with three levels (Detractor, Neutral and Promoter)
+#'
+#' @details: Please make sure that the colors match the categories - Currently, alphabetical order of categories
+#' will be used.
+#'
+#' @param DataFrame data.frame. data.frame under investigation.
+#' @param Feature vector. Feature variable.
+#' @param NPSVariable factor. Net Promoter Score with categories.
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' # generate a small dataset
+#' NPSdata <- data.frame(Feat = sample(x = 1:4, size = 20, replace = T),
+#'                       NPS = sample(x = c("Detractor", "Neutral", "Promoter"), size = 20, replace = T))
+#' FeatureByNPS(DataFrame = NPSdata, Feature = "Feat", NPSVariable = "NPS")
+FeatureByNPS <- function(DataFrame, Feature, NPSVariable) {
+  ggplot(data = DataFrame, aes(DataFrame[,Feature], fill = as.factor(DataFrame[,NPSVariable]))) +
+    geom_bar(position = "fill") +
+    scale_fill_manual(values = c("red", "darkgrey","green"),
+                      labels = c("Detractor", "Neutral", "Promoter"),
+                      name = "Target Variable") +
+    theme(legend.position = "none") +
+    labs(y = "count", x = paste("Feature:", Feature))
+}
+
 
 
 #' Density chart for numerical feature by categorical target variable

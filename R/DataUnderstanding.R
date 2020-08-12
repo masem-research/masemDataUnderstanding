@@ -290,23 +290,28 @@ FreqTableMissingValues <- function(DataFrame, absoluteValues = TRUE, chart = FAL
   }
 
   ## Chart
-  # TODO: Change the colors of the bars from green (currently all bars are set to blue!)
-  #  if frequency of missing values is 0 to red if there are missing values in a variable!
   if (chart) {
     #   Please note: the chart requires relative values!
     RelativeValuesChart <- data.frame(ValidCases = (nrow(DataFrame) - vectorMissingValues)/nrow(DataFrame),
                                       MissingCases = vectorMissingValues/nrow(DataFrame))
-
+    #   Generate a new color vector (T if a variable contains a missing value and F if not)
+    NAvector <- RelativeValuesChart$ValidCases < 1
+    #   Set rownames:
+    names(NAvector) <- rownames(RelativeValuesChart)
     # Generate Data
     RelativeValuesChart$VarNames <- rownames(RelativeValuesChart)
+    # Add NA Flag (2: Missing Values present, 1: no missing values present)
+    RelativeValuesChart$NAColorVector <- ifelse(test = NAvector, yes = "darkgreen", no = "red")
     # Lock in factor level order (reversed order of levels necessary here!)
     RelativeValuesChart$VarNames <- factor(RelativeValuesChart$VarNames,
                                            levels = rev(RelativeValuesChart$VarNames))
     # Plot relative number by variable
-    print(ggplot(data = RelativeValuesChart, aes(x = VarNames, y = ValidCases)) +
-      geom_bar(stat= "identity", fill = "#0066B3", width = 0.8) +
+    print(ggplot(data = RelativeValuesChart, aes(x = VarNames, y = ValidCases, fill = NAColorVector)) +
+      geom_bar(stat= "identity",
+               width = 0.8) +
+      theme(legend.position = "none") +
       xlab("") +
-      ylab("Relative number of valid cases") +
+      ylab("Relative number of valid cases - red: NA available") +
       coord_flip())
   }
 

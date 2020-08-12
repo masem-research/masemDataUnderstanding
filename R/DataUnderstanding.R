@@ -258,7 +258,10 @@ FreqTableMissingValues <- function(DataFrame, absoluteValues = TRUE, chart = FAL
     MissingValuesVariables <- data.frame(ValidCases = (nrow(DataFrame) - vectorMissingValues)/nrow(DataFrame),
                                          MissingCases = vectorMissingValues/nrow(DataFrame))
   }
+
   ## Chart
+  # TODO: Change the colors of the bars from green (currently all bars are set to blue!)
+  #  if frequency of missing values is 0 to red if there are missing values in a variable!
   if (chart) {
     #   Please note: the chart requires relative values!
     RelativeValuesChart <- data.frame(ValidCases = (nrow(DataFrame) - vectorMissingValues)/nrow(DataFrame),
@@ -389,6 +392,7 @@ AverageByCategoricalVariable <- function(NumericalVariables,
                                    by = list(DataFrame[,CategoricalVariable]),
                                    FUN = "mean",
                                    na.rm = dropNA)
+  ## TODO: Currently NA-category in the categorical variable will not displayed!
   # Set correct group name in data.frame
   colnames(TableArithmeticMean)[1] <- CategoricalVariable
   # return

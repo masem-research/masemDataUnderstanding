@@ -71,27 +71,45 @@ VariableMetaData <- function(DataFrame) {
 #'
 #' @description Provides a table with absolute and relative number of cases.
 #' The output table can be easily used in Markdown with kable().
+#'
+#' @details Per default NA values will be displayed, no matter if there are any.
+#' Set `printNA` argument to FALSE to surpress NA values. Please note: If there are
+#' any NA values in x (variable), a warning will be issued!
+#'
 #' @param x vector. Should be a vector.
+#' @param printNA boolean. Print NA values? Default is TRUE
 #'
 #' @return data.frame. absolute and relative values
 #' @export
 #'
 #' @examples
 #' ## iris
-#' freqTable(x = iris$Species)
+#' freqTable(x = iris$Species, printNA = TRUE)
 #' ## mtcars
 #' # automatic or manual?
-#' freqTable(x = mtcars$am)
+#' freqTable(x = mtcars$am, printNA = FALSE)
 #' # number of gears
-#' freqTable(x = mtcars$gear)
-freqTable <- function(x) {
-  # generate absolute and relative frequencies
-  table.absolute.values <- table(x)
+#' freqTable(x = mtcars$gear, printNA = FALSE)
+#' # NA values in variable
+#' freqTable(x = airquality$Ozone, printNA = TRUE)
+#' freqTable(x = airquality$Ozone, printNA = FALSE)
+freqTable <- function(x, printNA = TRUE) {
+  ## set NA parameter in table-function argument useNA:
+  printNATable <- "always"
+  if (!printNA) {
+    printNATable <- "no"
+  }
+  ## Print warning if NAs values are in vector!
+  if (sum(is.na(x)) > 0) {
+    warning("NAs in vector!")
+  }
+  ## generate absolute and relative frequencies
+  table.absolute.values <- table(x, useNA = printNATable)
   table.relative.values <- prop.table(table.absolute.values)*100
-  # combine both variables
+  ## combine both variables
   df.absolute.and.relative.values <- data.frame(table.absolute.values)
   df.absolute.and.relative.values$p <- table.relative.values
-  # set column names
+  ## set column names
   names(df.absolute.and.relative.values) <- c("value","n","p [%]")
   # return df
   return(df.absolute.and.relative.values)

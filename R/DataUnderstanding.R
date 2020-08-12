@@ -352,6 +352,8 @@ StatisticalParameterIntervalLevel <- function(variable,
 #' @param NumericalVariables character. Vector of names of numerical variables.
 #' @param CategoricalVariable character. Name of single categorical (target) variable.
 #' @param DataFrame data.frame. Input data.frame. Has to contain the `NumericalVariables`
+#' @param dropNA boolean. Drop NA values prior to analysis in numerical variable?
+#' Default is `FALSE`
 #' and the single `CategoricalVariable`
 #'
 #' @return
@@ -361,19 +363,32 @@ StatisticalParameterIntervalLevel <- function(variable,
 #' # a few numerical features
 #' AverageByCategoricalVariable(NumericalVariables = c("Sepal.Length", "Sepal.Width"),
 #'                              CategoricalVariable = c("Species"),
-#'                              DataFrame = iris)
+#'                              DataFrame = iris,
+#'                              dropNA = TRUE)
 #' # a single numerical feature
 #' AverageByCategoricalVariable(NumericalVariables = c("mpg"),
 #'                              CategoricalVariable = c("am"),
-#'                              DataFrame = mtcars)
+#'                              DataFrame = mtcars,
+#'                              dropNA = TRUE)
+#' # Example with NA values
+#' AverageByCategoricalVariable(NumericalVariables = c("Ozone"),
+#'                              CategoricalVariable = c("Month"),
+#'                              DataFrame = airquality,
+#'                              dropNA = FALSE)
+#' # Drop NA values
+#' AverageByCategoricalVariable(NumericalVariables = c("Ozone"),
+#'                              CategoricalVariable = c("Month"),
+#'                              DataFrame = airquality,
+#'                              dropNA = TRUE)
 AverageByCategoricalVariable <- function(NumericalVariables,
                                          CategoricalVariable,
-                                         DataFrame) {
+                                         DataFrame,
+                                         dropNA = FALSE) {
   # Calculate the table
   TableArithmeticMean <- aggregate(x = DataFrame[,NumericalVariables, drop = FALSE],
                                    by = list(DataFrame[,CategoricalVariable]),
                                    FUN = "mean",
-                                   na.rm = TRUE)
+                                   na.rm = dropNA)
   # Set correct group name in data.frame
   colnames(TableArithmeticMean)[1] <- CategoricalVariable
   # return

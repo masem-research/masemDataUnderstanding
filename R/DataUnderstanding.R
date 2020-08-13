@@ -435,48 +435,95 @@ AverageByCategoricalVariable <- function(NumericalVariables,
 
 
 
-DisplayCoefficients <- function(CoefficientVector, lmModel) {
+
+#' Display Coefficients
+#'
+#' @description Displays either coefficients from a named vector or from
+#' a lm-model.
+#'
+#' @details If the character vector has no coefficient names, a character
+#' vector in form v1...vk (k: number of coefficients in vector) will be built.
+#'
+#' @param CoefficientVectorOrlmModel either a named vectoror a lm-model result.
+#' @param DisplayIntercept boolean. If TRUE, everytrhing that sounds like `intercept`
+#' will be deleted out of the dataset
+#'
+#' @return data.frame. DataFrame of coefficients with three variables: variablenames,
+#' Coefficients, PositiveDirection
+#' @export
+#'
+#' @examples
+#' ## Mode 1: named vector
+#' # Generate some data
+#' Coefficients <- c(0.5, 0.7, -0.3)
+#' names(Coefficients) <- c("Klarheit", "Freundlichkeit", "Dauer")
+#' ## Call function
+#' DisplayCoefficients(CoefficientVectorOrlmModel = Coefficients,
+#'                     DisplayIntercept = F)
+#' ## Mode 2: lm model output
+#' # Generate a lm-object:
+#' mtcarsLmComplete <- lm(mpg ~ ., data = mtcars)
+#' ## Call function
+#' DisplayCoefficients(CoefficientVectorOrlmModel = mtcarsLmComplete,
+#'                     DisplayIntercept = T)
+DisplayCoefficients <- function(CoefficientVectorOrlmModel,
+                                DisplayIntercept = F) {
   ## Special function to display coefficients
   #   Two modes:
   #    Mode 1: coefficient vector, for example extracted with coefficients
   #    Mode 2: lm-model
-  ## Mode 1: Coefficients!
-  if (!missing(CoefficientVector)) {
-    ## Message
+  if (is.numeric(CoefficientVectorOrlmModel)) {
     message("Mode 1: Coefficient Vector")
     ## Check if vector has names, otherwise issue a warning!
     if (is.null(names(CoefficientVector))) {
       warning("Coefficient Vector has no variable names!\nAdding v1 to vn as variable names!")
-      names(CoefficientVector) <- paste0("v", 1:length(CoefficientVector))
-    }
-    ## Display the coefficients
-    # Generate a data.frame first (ggplot2 is a little picky about input data formats...)
-    CoefficientDataFrame <- data.frame(variablenames = names(CoefficientVector),
-                                       Coefficients = CoefficientVector)
-    # remove row.names
-    rownames(x = CoefficientDataFrame) <- NULL
-    # ggplot2 barchart
-    g <- ggplot(data = CoefficientDataFrame, aes(y = factor(Coefficients)))
-    # plot
-    g + geom_bar(stats = "identity")
-
-    ##
-    } else if (!missing(lmModel)) {
+      names(CoefficientVector) <- paste0("v", 1:length(CoefficientVector)) }
+  } else if (class(CoefficientVectorOrlmModel) == "lm") {
+    ## Mode 2: harvest coefficients using
     # Message
     message("Mode 2: lm model")
+    # Try to gather coefficients
+    CoefficientVector <- coef(CoefficientVectorOrlmModel)
+    ## Check if coefficients could be gathered, if not stop and message
+    #   Please note: only lm etc objects should return coef, all other objects should
+    #    return NULL
+    if (is.null(CoefficientVector)) {
+      stop("Could not get any coefficients out of the lmModel object!")
+    }
   }
-}
 
-## Test
-# Mode 2: lm-model
-# no variable names
-DisplayCoefficients(CoefficientVector = c(0.5, 0.7, -0.3))
-# user defined variable names
-Coefficients <- c(0.5, 0.7, -0.3)
-names(Coefficients) <- c("Klarheit", "Freundlichkeit", "Dauer")
-DisplayCoefficients(CoefficientVector = Coefficients)
-# Mode 2:
-DisplayCoefficients(lmModel = lm(mtcars$mpg ~ mtcars$cyl))
+  ## Display the coefficients
+  # Generate a data.frame first (ggplot2 is a little picky about input data formats...)
+  CoefficientDataFrame <- data.frame(variablenames = names(CoefficientVector),
+                                     Coefficients = CoefficientVector,
+                                     PositiveDirection = CoefficientVector > 0)
+  # remove row.names
+  rownames(x = CoefficientDataFrame) <- NULL
+  # remove Coefficients
+  if (!DisplayIntercept) {
+    # look for anything that sounds like Intercept
+    FilterIntercept <- grepl(pattern = "*ntercept*", x = CoefficientDataFrame$variablenames)
+    # Remove this variable from data.frame
+    CoefficientDataFrame <- CoefficientDataFrame[!FilterIntercept,]
+  }
+
+  ## order DataFrame by coefficient strength
+  CoefficientDataFrame <- CoefficientDataFrame[rev(order(CoefficientDataFrame$Coefficients)),]
+
+  ## Create chart in ggplot2
+  print(ggplot(data = CoefficientDataFrame, aes(x = variablenames,
+                                                y = Coefficients,
+                                                fill = PositiveDirection)) +
+          geom_bar(stat = "identity", width = 0.7) +
+          theme(legend.position = "none") +
+          coord_flip() +
+          #ylim(-1,1) +
+          xlab("") +
+          ylab("Coefficient Strength")
+  )
+  # return coefficients
+  return(CoefficientDataFrame)
+}
 
 
 

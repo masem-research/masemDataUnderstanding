@@ -435,4 +435,49 @@ AverageByCategoricalVariable <- function(NumericalVariables,
 
 
 
+DisplayCoefficients <- function(CoefficientVector, lmModel) {
+  ## Special function to display coefficients
+  #   Two modes:
+  #    Mode 1: coefficient vector, for example extracted with coefficients
+  #    Mode 2: lm-model
+  ## Mode 1: Coefficients!
+  if (!missing(CoefficientVector)) {
+    ## Message
+    message("Mode 1: Coefficient Vector")
+    ## Check if vector has names, otherwise issue a warning!
+    if (is.null(names(CoefficientVector))) {
+      warning("Coefficient Vector has no variable names!\nAdding v1 to vn as variable names!")
+      names(CoefficientVector) <- paste0("v", 1:length(CoefficientVector))
+    }
+    ## Display the coefficients
+    # Generate a data.frame first (ggplot2 is a little picky about input data formats...)
+    CoefficientDataFrame <- data.frame(variablenames = names(CoefficientVector),
+                                       Coefficients = CoefficientVector)
+    # remove row.names
+    rownames(x = CoefficientDataFrame) <- NULL
+    # ggplot2 barchart
+    g <- ggplot(data = CoefficientDataFrame, aes(y = factor(Coefficients)))
+    # plot
+    g + geom_bar(stats = "identity")
+
+    ##
+    } else if (!missing(lmModel)) {
+    # Message
+    message("Mode 2: lm model")
+  }
+}
+
+## Test
+# Mode 2: lm-model
+# no variable names
+DisplayCoefficients(CoefficientVector = c(0.5, 0.7, -0.3))
+# user defined variable names
+Coefficients <- c(0.5, 0.7, -0.3)
+names(Coefficients) <- c("Klarheit", "Freundlichkeit", "Dauer")
+DisplayCoefficients(CoefficientVector = Coefficients)
+# Mode 2:
+DisplayCoefficients(lmModel = lm(mtcars$mpg ~ mtcars$cyl))
+
+
+
 

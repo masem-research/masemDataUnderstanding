@@ -2,6 +2,7 @@
 
 export(AbsoluteValues)
 export(AverageByCategoricalVariable)
+export(DisplayCoefficients)
 export(FeatureByNPS)
 export(FeatureByTargetVariable)
 export(FreqTableMissingValues)

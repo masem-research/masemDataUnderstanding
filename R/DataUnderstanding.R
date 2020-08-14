@@ -496,7 +496,7 @@ DisplayCoefficients <- function(CoefficientVectorOrlmModel,
   # Generate a data.frame first (ggplot2 is a little picky about input data formats...)
   CoefficientDataFrame <- data.frame(variablenames = names(CoefficientVector),
                                      Coefficients = CoefficientVector,
-                                     PositiveDirection = CoefficientVector > 0)
+                                     PositiveDirection = CoefficientVector >= 0)
   # remove row.names
   rownames(x = CoefficientDataFrame) <- NULL
   # remove Coefficients

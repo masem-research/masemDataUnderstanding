@@ -527,4 +527,29 @@ DisplayCoefficients <- function(CoefficientVectorOrlmModel,
 
 
 
+#' Load and/or install a package
+#'
+#' @param PackageName character. Name of the package to load / install and load.
+#'
+#' @return nothing.
+#' @export
+#'
+#' @examples
+#' LoadAndOrInstallAPackage(PackageName = "ggplot2")
+#' LoadAndOrInstallAPackage(PackageName = "effsize")
+LoadAndOrInstallAPackage <- function(PackageName) {
+  # check if input is a character
+  if (!is.character(PackageName)) {
+    stop("Please provide the Package Name as a character!")
+  }
+  # check if package is already installed and if not, install it
+  if (!require(PackageName, character.only = T)) install.packages(PackageName)
+  # Load the package if already installed
+  invisible(library(PackageName, character.only = T))
+}
+
+
+
+
+
 

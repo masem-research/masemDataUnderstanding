@@ -550,6 +550,38 @@ LoadAndOrInstallAPackage <- function(PackageName) {
 
 
 
+#' Skewness
+#'
+#' @param InputVariable numerical or logical. Inputvariable has to be a numerical or logical vector.
+#' Other inputs are not allowed. NA values are allowed and can be removed using argument `na.rm`
+#' @param na.rm logical- Logical value if NA values should be removed. default is `FALSE`, NAs will not be removed and result is NA.
+#' Set to `TRUE` to remove NA values.
+#'
+#' @return numerical. Returns a single value representing the skewness.
+#' @export
+#'
+#' @examples
+#' skewness(InputVariable = rnorm(1E7)) # result should be approx. 0
+#' skewness(InputVariable = rlnorm(1E7)) # result should be > 5
+skewness <- function(InputVariable, na.rm = FALSE) {
+  # check the input - currently allowed only numeric and logical variables
+  if (!is.numeric(InputVariable) && !is.logical(InputVariable)) {
+    warning("argument is not numeric or logical: returning NA")
+    return(NA_real_)
+  }
+  # remove NAs
+  if (na.rm) {
+    InputVariable <- InputVariable[!is.na(InputVariable)]
+    }
+  # calculate skewness
+  # total sum: x - mean(x)
+  TS <- InputVariable - mean(InputVariable)
+  # skewness:
+  skewness <- sqrt(length(InputVariable)) * sum(TS^3) / sum(TS^2)^1.5
+  # return
+  return(skewness)
+}
+
 
 
 

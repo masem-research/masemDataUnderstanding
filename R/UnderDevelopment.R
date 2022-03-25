@@ -118,3 +118,49 @@ ResiduenBereinigen <- function(lmObjekt, SchwellenwertAusschlussStandResiduen) {
   
 }
 
+
+
+#' Split data.frame in Trainings- und Testdatensatz und Bereinigung 
+#' 
+#' @description Splittet einen data.frame nach der Split Ratio (default .7) in einen Trainings- und Testdatensatz und 
+#' entfernt Variablen ohne Varianz in beiden Splits sowie Zeilen mit NAs
+#'
+#' @param DataFrame data.frame. data.frame, der in einen Trainings- und Testdatensatz zerlegt werden soll.
+#' @param SplitRatio double. Anteil an Fällen im Trainingsdatensatz - **in Punkten anzugeben!** - default: `.7` (70%)
+#' @param NAEntfernen logicial. Sollen Zeilen mit fehlenden Werten entfernt wernden? Es findet ein sog. 
+#' Fallweiser (listwise) Ausschluss statt, d.h. der ganze Fall wird entfernt. default = `TRUE`.
+#'
+#' @return list. Liste mit den beiden data.frames: Trainings- und Test data.frames.
+#' @export
+#'
+#' @examples
+#' TrainingUndTestDataFrame <- SplitUndEntfernenVonKonstanten(DataFrame = AnalyseDatenSatz, SplitRatio = .7, NAEntfernen = TRUE)
+#' sapply(X = TrainingUndTestDataFrame, dim)
+SplitUndEntfernenVonKonstanten <- function(DataFrame, SplitRatio = .7, NAEntfernen = TRUE) {
+  ## Zuerst werden Datensätze mit NAs entfernt, wenn TRUE
+  if (NAEntfernen) {
+    message(paste0("Es liegen ", nrow(DataFrame) - sum(complete.cases(DataFrame)), " Fälle mit fehlenden Werten vor. 
+                   \nDiese werden entfernt."))
+    DataFrame <- DataFrame[complete.cases(DataFrame),]
+  }
+  ## Split DataFrame nach Ratio
+  IDSampleTraining <- sample(x = 1:nrow(DataFrame), size = round(nrow(DataFrame)*SplitRatio), replace = FALSE)
+  ## Aufteilen des Data.Frame
+  DataFrameTraining <- DataFrame[IDSampleTraining,]
+  DataFrameTest <- DataFrame[-IDSampleTraining,]
+  message(paste0("Im Trainingsdatensatz befinden sich ", nrow(DataFrameTraining), " Fälle\n", 
+                 "Im Testdatensatz befinden sich ", nrow(DataFrameTest), " Fälle.\n"))  
+  ## Prüfen, welche Variablen in beiden Teildatensätzen keine Varianz aufweisen
+  message(paste0("Im Trainingsdatensatz weisen ", sum(sapply(X = DataFrameTraining, FUN = sd, na.rm = T) == 0), 
+                 " Variablen keine Varianz auf.\n",
+                 "Im Testdatensatz weisen ", sum(sapply(X = DataFrameTest, FUN = sd, na.rm = T) == 0), 
+                 " Variablen keine Varianz auf.\n"))
+  ## Kombinierten Vektor mit Variablennamen erstellen, die keine Varianz aufweisen
+  VariablenOhneVarianz <- unique(c(colnames(DataFrameTraining)[sapply(X = DataFrameTraining, FUN = sd, na.rm = T) == 0],
+                                   colnames(DataFrameTest)[sapply(X = DataFrameTest, FUN = sd, na.rm = T) == 0]))
+  ## Datensatz bereinigen
+  DataFrameTraining <- DataFrameTraining[,!colnames(DataFrameTraining) %in% VariablenOhneVarianz]
+  DataFrameTest <- DataFrameTest[,!colnames(DataFrameTest) %in% VariablenOhneVarianz]
+  ## Datensätze als Liste zurückgeben
+  return(list(DataFrameTraining = DataFrameTraining, DataFrameTest = DataFrameTest))
+}

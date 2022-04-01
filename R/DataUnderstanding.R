@@ -584,4 +584,38 @@ skewness <- function(InputVariable, na.rm = FALSE) {
 
 
 
-
+#' Change Encoding in an existing R data.frame
+#'
+#' @param InputDataFrame data.frame. Input data.frame
+#' @param TargetEncoding character. Target encoding. default is `ansi`. Check `?Èncoding` function for more information
+#' about available encodings.
+#' @param ConvertFactorIntoCharacter logical. Should factor variables first converted in character variable. If set to `FALSE`,
+#' this will not be done and (!) labels of factor variables will not be changed into the target encoding. default is `TRUE`
+#'
+#' @return data.frame. data.frame with target encoding.
+#' @export
+#'
+#' @examples
+#' # Change into ANSI
+#' DataFrame <- data.frame(id = 1:3, Position = c("Mähen", "Flüssigdünger ausbringen", "Mähen diagonal"))
+#' DataFrame
+#' # Change into UTF-8
+#' DataFrameUTF8 <- ChangeEncodingInAnObject(InputDataFrame = DataFrameANSI, TargetEncoding = "UTF-8")
+#' DataFrameUTF8
+#' # Change back
+#' ChangeEncodingInAnObject(InputDataFrame = DataFrameUTF8, TargetEncoding = "ANSI")
+ChangeEncodingInAnObject <- function(InputDataFrame, TargetEncoding = "ansi", ConvertFactorIntoCharacter = TRUE) {
+  ## Convert all factors Into characters:
+  if (ConvertFactorIntoCharacter) {
+    ColumnIsFactorVar <- sapply(InputDataFrame, is.factor)
+    InputDataFrame[ColumnIsFactorVar] <- lapply(InputDataFrame[ColumnIsFactorVar], as.character)
+  }
+  
+  ## Change encoding to target encoding
+  NumberOfColumns <- ncol(InputDataFrame)
+  for (Column in 1:NumberOfColumns)
+    if(class(InputDataFrame[, Column]) == "character"){
+      Encoding(InputDataFrame[, Column]) <- TargetEncoding
+    }
+  return(InputDataFrame)
+}

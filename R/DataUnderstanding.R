@@ -619,3 +619,29 @@ ChangeEncodingInAnObject <- function(InputDataFrame, TargetEncoding = "ansi", Co
     }
   return(InputDataFrame)
 }
+
+                                                       
+                                                       
+                                                       
+#' Renames a single variable in a data.frame
+#'
+#' @param InputDataFrame data.frame. Input data.frame in which the column name of a **single** variable should be 
+#' changed.  
+#' @param ExistingVariableName character. Existing column name, which should be changed
+#' @param NewVariableName character. New column name. 
+#'
+#' @return data.frame. Renamed - (!)complete - data.frame.
+#' @export
+#'
+#' @examples 
+#' RenameVariable(InputDataFrame = iris, ExistingVariableName = "Sepal.Length", NewVariableName = "SepalLength")
+RenameVariable <- function(InputDataFrame, ExistingVariableName, NewVariableName) {
+  # Renames a single variable in a data.frame
+  colnames(InputDataFrame)[colnames(InputDataFrame) == ExistingVariableName] <- NewVariableName
+  # return
+  return(InputDataFrame)
+}
+
+                                                       
+                                                       
+                                                       
